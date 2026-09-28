@@ -1,0 +1,140 @@
+{% extends "base.jinja" %}
+{% block tab_title %}{{ site_name }}{% endblock %}
+{% block content %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-table">
+                <div class="card-header">
+                    <div class="row w-full">
+                        <div class="col">
+                            <h2 class="card-title mb-0">{{ table.details.name }}</h2>
+                            <p class="text-secondary m-0">{{ table.details.description }}</p>
+                        </div>
+                        <div class="col-md-auto col-sm-12">
+                            <div class="btn-list ms-auto d-flex flex-wrap">
+                                <div class="input-group input-group-flat w-auto">
+                              <span class="input-group-text">
+                                <!-- Download SVG icon from http://tabler.io/icons/icon/search -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                     stroke-linejoin="round" aria-hidden="true" focusable="false" class="icon">
+                                  <path d="M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path>
+                                  <path d="M21 21l-6 -6"></path>
+                                </svg>
+                              </span>
+
+                                    <input id="advanced-table-search" type="text" class="form-control"
+                                           autocomplete="off">
+
+                                    <span class="input-group-text">
+                                <kbd>ctrl + K</kbd>
+                              </span>
+                                </div>
+
+                                <button type="button" class="btn btn-icon" aria-label="More actions">
+                                    <!-- Download SVG icon from http://tabler.io/icons/icon/dots -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" aria-hidden="true" focusable="false" class="icon">
+                                        <path d="M4 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                        <path d="M11 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                        <path d="M18 12a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"></path>
+                                    </svg>
+                                </button>
+                                <div class="dropdown">
+                                    <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"
+                                            aria-expanded="false">Download
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button type="button" class="dropdown-item">Action</button>
+                                        <button type="button" class="dropdown-item">Another action</button>
+                                        <button type="button" class="dropdown-item">Third action</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn">Button</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="advanced-table">
+                    <div class="table-responsive">
+                        <table class="table table-vcenter table-selectable">
+                            <thead>
+                            <tr>
+                                <th class="w-1"></th>
+                                {% for row in table.list_ui %}
+                                    <th>{{ row.title }}</th>
+                                {% endfor %}
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody class="table-tbody">
+                            {% for row in data %}
+                                <tr>
+                                    <td>
+                                        <input class="form-check-input m-0 align-middle table-selectable-check"
+                                               type="checkbox" aria-label="Select invoice" value="true">
+                                    </td>
+                                    {% for ui in table.list_ui %}
+                                        <td>
+                                            {% if ui.__class__.__name__ == 'Link' %}
+                                                <a href="{{ table.details.slug }}/{{ row.get(table.details.pk_column) }}">{{ row.get(ui.column_mapping) }}</a>
+                                            {% else %}
+                                                {% set result=row.get(ui.column_mapping) %}
+                                                {% if result is not none %}
+                                                    {{ result }}
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    <td class="text-end"><a
+                                            href="{{ table.details.slug }}/{{ row.get(table.details.pk_column) }}">View
+                                        Row</a></td>
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer d-flex align-items-center">
+                        <div class="dropdown" data-table-id="advanced-table">
+                            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <span id="advanced-table-page-count" class="me-1">20</span>
+                                <span>records</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <button type="button" class="dropdown-item" onclick="setPageListItems(this)"
+                                        data-value="10">10 records
+                                </button>
+                                <button type="button" class="dropdown-item" onclick="setPageListItems(this)"
+                                        data-value="20">20 records
+                                </button>
+                                <button type="button" class="dropdown-item" onclick="setPageListItems(this)"
+                                        data-value="50">50 records
+                                </button>
+                                <button type="button" class="dropdown-item" onclick="setPageListItems(this)"
+                                        data-value="100">100 records
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- BEGIN PAGINATION -->
+                        <nav aria-label="Pagination">
+                            <ul class="pagination m-0 ms-auto">
+                                <li class="page-item active"><a class="page-link cursor-pointer" data-i="1"
+                                                                data-page="20">1</a></li>
+                                <li class="page-item"><a class="page-link cursor-pointer" data-i="2"
+                                                         data-page="20">2</a></li>
+                                <li class="page-item"><a class="page-link cursor-pointer" data-i="3"
+                                                         data-page="20">3</a></li>
+                            </ul>
+                        </nav>
+                        <!-- END PAGINATION -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
